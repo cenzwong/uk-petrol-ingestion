@@ -1,16 +1,16 @@
-from pyspark.sql import functions as F
-from pyspark.sql import SparkSession, DataFrame
 from datetime import date
+
+from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import functions as F
+
 
 def extract(json_path) -> DataFrame:
     # Read JSON file
     return spark.read.json(json_path)
 
+
 def transformation(df: DataFrame) -> DataFrame:
-    return df.select(
-        "last_updated",
-        F.explode("stations").alias("stations")
-    ).select(
+    return df.select("last_updated", F.explode("stations").alias("stations")).select(
         F.col("last_updated"),
         F.col("stations")["site_id"].alias("site_id"),
         F.col("stations")["brand"].alias("brand"),
@@ -19,24 +19,26 @@ def transformation(df: DataFrame) -> DataFrame:
         F.col("stations")["location"]["latitude"].alias("lat"),
         F.col("stations")["location"]["longitude"].alias("lon"),
         F.col("stations")["prices"]["B7"].alias("B7"),
-        F.col("stations")["prices"]["E10"].alias("E10")
+        F.col("stations")["prices"]["E10"].alias("E10"),
     )
+
 
 def load(df: DataFrame) -> None:
     pdf = df.toPandas()
-    pdf.to_csv(f'data/shell/shell_fuel_prices_{today_str}.csv', index=False)
+    pdf.to_csv(f"data/shell/shell_fuel_prices_{today_str}.csv", index=False)
 
-if __name__ == "__main__":
-    spark = SparkSession.builder.appName("Read Shell Fuel Prices JSON").getOrCreate()
 
+def execute(spark) -> None:
     # Get today's date
     today_str = date.today().isoformat()
 
     # File path
     json_path = f"data/shell/shell_fuel_prices_{today_str}.json"
 
-    load(
-        extract(json_path).transform(
-            transformation
-        )
-    )
+    load(extract(json_path).transform(transformation))
+
+
+if __name__ == "__main__":
+    spark = SparkSession.builder.appName("Read Shell Fuel Prices JSON").getOrCreate()
+
+    execute(spark)

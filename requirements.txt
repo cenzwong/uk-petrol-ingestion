@@ -1,1 +1,2 @@
 pyspark
+git+https://github.com/cenzwong/boto3-helper.git
