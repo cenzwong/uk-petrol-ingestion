@@ -1,2 +1,4 @@
 pyspark
 git+https://github.com/cenzwong/boto3-helper.git
+pyiceberg[s3fs,pyarrow]
+boto3

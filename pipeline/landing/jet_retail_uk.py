@@ -33,14 +33,14 @@ if __name__ == "__main__":
     last_updated_str = fuel_prices_data_json["last_updated"]
     print(f"{last_updated_str=}")
 
-    last_updated_iso = datetime.strptime(
+    last_updated_path = datetime.strptime(
         last_updated_str, "%d/%m/%Y %H:%M:%S"
-    ).strftime("%Y-%m-%d")
+    ).strftime("%Y%m%d%H%M")
 
     s3_client = boto3.client("s3")
     s3_client.put_object(
         Bucket="uk-fuel-price-data",
-        Key=f"landing/{last_updated_iso}/{company}/fuel_prices_data.json",
+        Key=f"landing/{company}/{last_updated_path}/fuel_prices_data.json",
         Body=json.dumps(fuel_prices_data_json),
     )
 
