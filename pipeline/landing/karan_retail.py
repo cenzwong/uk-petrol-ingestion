@@ -10,7 +10,7 @@ url = "https://api2.krlmedia.com/integration/live_price/krl"
 if __name__ == "__main__":
     print(f"Downloading data from {company}...")
     # URL to download
-    response = requests.get(url)
+    response = requests.get(url, timeout=3)
 
     fuel_prices_data_json: dict = response.json()
 
