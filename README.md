@@ -1,4 +1,9 @@
 # uk-petrol-ingestion
+
+```
+python landing_runner.py && python landing_to_raw_runner.py
+```
+
 for ingestion, and store data temp
 
 stack:
